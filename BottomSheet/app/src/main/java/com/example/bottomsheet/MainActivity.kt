@@ -2,7 +2,9 @@ package com.example.bottomsheet
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.example.bottomsheet.databinding.ActivityMainBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class MainActivity : AppCompatActivity() {
 

@@ -17,6 +17,8 @@ class BottomSheetOne : BottomSheetDialogFragment() {
         get() = checkNotNull(_binding) { "binding was accessed outside of view lifecycle" }
 
     private lateinit var adapter: PersonAdapter
+
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -24,12 +26,6 @@ class BottomSheetOne : BottomSheetDialogFragment() {
     ): View {
         _binding = BottomSheetOneBinding.inflate(layoutInflater)
         return binding.root
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext())
-
-        return dialog
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
