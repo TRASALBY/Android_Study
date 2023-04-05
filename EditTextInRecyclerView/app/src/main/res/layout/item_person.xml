@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_name"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_delete_profile"
             app:layout_constraintStart_toEndOf="@id/tv_name"
             app:layout_constraintTop_toTopOf="@id/tv_name" />
 
@@ -59,10 +59,19 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_description"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_delete_profile"
             app:layout_constraintStart_toEndOf="@id/tv_description"
             app:layout_constraintTop_toTopOf="@id/tv_description" />
 
+        <Button
+            android:id="@+id/btn_delete_profile"
+            android:text="삭제"
+            android:layout_width="80dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toEndOf="@id/et_name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -10,21 +10,29 @@ import com.example.edittextinrecyclerview.databinding.ItemPersonBinding
 import com.example.edittextinrecyclerview.model.Person
 
 
-class PersonAdapter : ListAdapter<Person, PersonAdapter.PersonViewHolder>(diffUtil) {
+class PersonAdapter(private val itemClick : (Person) -> Unit) : ListAdapter<Person, PersonAdapter.PersonViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
-        return PersonViewHolder(parent)
+        return PersonViewHolder(itemClick, parent)
     }
 
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class PersonViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
+    class PersonViewHolder(itemClick: (Person) -> Unit, parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_person,parent,false)
     ) {
         private val binding = ItemPersonBinding.bind(itemView)
+        private lateinit var nowPerson: Person
+
+        init {
+            binding.btnDeleteProfile.setOnClickListener {
+                itemClick(nowPerson)
+            }
+        }
         fun bind(person: Person){
+            nowPerson = person
             binding.person = person
         }
     }
