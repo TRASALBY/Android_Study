@@ -10,19 +10,21 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="제목"
-        android:textSize="20dp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/tv_description"
         app:layout_constraintEnd_toStartOf="@id/et_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <EditText
         android:id="@+id/et_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/tv_title"
-        app:layout_constraintBottom_toTopOf="@id/tv_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_title"
         app:layout_constraintTop_toTopOf="@+id/tv_title" />
@@ -32,11 +34,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="설명"
-        android:textSize="20dp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/rv_profile"
         app:layout_constraintEnd_toStartOf="@id/et_description"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
-        app:layout_constraintBottom_toTopOf="@id/rv_profile"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
     <EditText
         android:id="@+id/et_description"
@@ -51,12 +53,23 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_profile"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_add_user"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_description"
+        tools:itemCount="3"
         tools:listitem="@layout/item_person" />
+
+    <Button
+        android:id="@+id/btn_add_user"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="유저 추가"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_profile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
