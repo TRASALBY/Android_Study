@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">TimerService</string>
     <string name="fab_content_desc">타이머 시작 버튼</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
