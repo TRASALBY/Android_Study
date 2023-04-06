@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TimerService</string>
+    <string name="fab_content_desc">타이머 시작 버튼</string>
 </resources>
