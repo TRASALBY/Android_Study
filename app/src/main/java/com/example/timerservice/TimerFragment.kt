@@ -1,5 +1,6 @@
 package com.example.timerservice
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,13 +15,42 @@ class TimerFragment : Fragment() {
     private var _binding : FragmentTimerBinding? = null
     private val binding get() = checkNotNull(_binding)
 
+    private lateinit var timerIntent: Intent
+
+    private var isRunning = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTimerBinding.inflate(inflater,container,false)
-        // Inflate the layout for this fragment
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        timerIntent = Intent(requireContext(), TimerService::class.java)
+        startTimerWithMode(TimerService.LOADING)
+    }
+
+    private fun setBtnClickListener(){
+        binding.btnPlay.setOnClickListener {
+            if(isRunning){
+                binding.btnPlay.setImageResource(R.drawable.baseline_pause_24)
+                startTimerWithMode(TimerService.PAUSE)
+            } else {
+                binding.btnPlay.setImageResource(R.drawable.baseline_play_arrow_24)
+                startTimerWithMode(TimerService.START)
+            }
+        }
+
+        binding.btnReset.setOnClickListener {
+            startTimerWithMode(TimerService.RESET)
+        }
+    }
+
+    private fun startTimerWithMode(mode: String){
+        timerIntent.putExtra(TimerService.MANAGE_ACTION_NAME, mode)
+        requireActivity().startService(timerIntent)
     }
 
     override fun onDestroyView() {
