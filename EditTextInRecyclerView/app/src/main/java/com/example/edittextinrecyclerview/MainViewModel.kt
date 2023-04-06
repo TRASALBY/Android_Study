@@ -10,6 +10,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor() : ViewModel() {
 
+    val title = MutableStateFlow("제목입니다.")
+    val description = MutableStateFlow("설명입니다.")
+
     private val _personList: MutableStateFlow<List<Person>> = MutableStateFlow(emptyList())
     val personList = _personList.asStateFlow()
 
