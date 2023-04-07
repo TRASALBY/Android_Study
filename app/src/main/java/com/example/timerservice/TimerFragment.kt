@@ -1,6 +1,9 @@
 package com.example.timerservice
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +21,8 @@ class TimerFragment : Fragment() {
     private lateinit var timerIntent: Intent
 
     private var isRunning = false
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,6 +59,31 @@ class TimerFragment : Fragment() {
         timerIntent.putExtra(TimerService.MANAGE_ACTION_NAME, mode)
         requireActivity().startService(timerIntent)
         timerIntent.removeExtra(TimerService.MANAGE_ACTION_NAME)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setBroadcastReceiver()
+    }
+
+    private fun setBroadcastReceiver() {
+        val intentFilter = IntentFilter().apply {
+            addAction(TimerService.TIMER_ACTION)
+        }
+
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                intent?.let {
+                    val nowTime = intent.getLongExtra(TimerService.ELAPSED_TIME,0L)
+                    updateView(nowTime)
+                }
+            }
+        }
+        requireActivity().registerReceiver(receiver, intentFilter)
+    }
+
+    private fun updateView(nowTime: Long){
+        binding.tvTimer.text = convertTimeStamp(nowTime)
     }
 
     override fun onDestroyView() {

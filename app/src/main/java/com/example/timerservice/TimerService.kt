@@ -48,20 +48,32 @@ class TimerService : LifecycleService() {
                     val nowTime = SystemClock.elapsedRealtime() - startTime
                     elapsedTime = lastTime + nowTime
                     Log.d("nowTime", (elapsedTime / 1_000L).toString())
+                    broadcastUpdate()
                 }
             } else {
                 while (isRunning) {
                     elapsedTime = SystemClock.elapsedRealtime() - startTime
                     Log.d("nowTime", (elapsedTime / 1_000L).toString())
+                    broadcastUpdate()
                 }
             }
         }
+    }
+
+    private fun broadcastUpdate() {
+        sendBroadcast(
+            Intent().apply {
+                action = TIMER_ACTION
+                putExtra(ELAPSED_TIME, elapsedTime)
+            }
+        )
     }
 
     private fun pauseTimer() {
         isRunning = false
         timerState = PAUSE
         timer.cancel()
+        broadcastUpdate()
     }
 
     private fun resetTimer() {
@@ -69,9 +81,12 @@ class TimerService : LifecycleService() {
         elapsedTime = 0L
         timerState = LOADING
         timer.cancel()
+        broadcastUpdate()
     }
 
     companion object {
+        const val TIMER_ACTION = "TIMER_ACTION"
+        const val ELAPSED_TIME = "ELAPSED_TIME"
         const val MANAGE_ACTION_NAME = "MANAGE_ACTION_NAME"
         const val LOADING = "LOADING"
         const val START = "START"
