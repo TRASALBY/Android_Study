@@ -6,25 +6,29 @@ import android.util.Log
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class TimerService: LifecycleService() {
+class TimerService : LifecycleService() {
 
     private var isRunning = false
     private var startTime = 0L
     private var elapsedTime = 0L
-    private lateinit var timer : Job
+    private var timer: Job = lifecycleScope.launchWhenCreated { }
+    private var timerState = LOADING
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.getStringExtra(MANAGE_ACTION_NAME)) {
             START -> {
                 startTimer()
             }
+
             PAUSE -> {
                 pauseTimer()
             }
+
             RESET -> {
                 resetTimer()
             }
@@ -32,37 +36,39 @@ class TimerService: LifecycleService() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        timer = lifecycleScope.launch {
-            while (true) {
-                if(isRunning) {
+
+    private fun startTimer() {
+        isRunning = true
+        startTime = SystemClock.elapsedRealtime()
+
+        timer = lifecycleScope.launch(Dispatchers.Default) {
+            if(timerState == PAUSE){
+                val lastTime = elapsedTime
+                while (isRunning) {
+                    val nowTime = SystemClock.elapsedRealtime() - startTime
+                    elapsedTime = lastTime + nowTime
+                    Log.d("nowTime", (elapsedTime / 1_000L).toString())
+                }
+            } else {
+                while (isRunning) {
                     elapsedTime = SystemClock.elapsedRealtime() - startTime
-                    if (elapsedTime % 1000L == 0L){
-                        Log.d("nowTime",(elapsedTime % 1000L).toString())
-                    }
+                    Log.d("nowTime", (elapsedTime / 1_000L).toString())
                 }
             }
         }
     }
 
-
-    private fun startTimer(){
-        startTime = SystemClock.elapsedRealtime()
-        isRunning = true
-    }
-
     private fun pauseTimer() {
-        if(isRunning) {
-            elapsedTime += SystemClock.elapsedRealtime() - startTime
-            isRunning = false
-        }
+        isRunning = false
+        timerState = PAUSE
+        timer.cancel()
     }
 
-    private fun resetTimer(){
-        if(isRunning.not()){
-            elapsedTime = 0L
-        }
+    private fun resetTimer() {
+        isRunning = false
+        elapsedTime = 0L
+        timerState = LOADING
+        timer.cancel()
     }
 
     companion object {

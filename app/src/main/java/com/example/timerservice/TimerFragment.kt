@@ -2,10 +2,10 @@ package com.example.timerservice
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.timerservice.databinding.FragmentTimerBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,28 +29,31 @@ class TimerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         timerIntent = Intent(requireContext(), TimerService::class.java)
-        startTimerWithMode(TimerService.LOADING)
+        setBtnClickListener()
     }
 
     private fun setBtnClickListener(){
         binding.btnPlay.setOnClickListener {
+            isRunning = isRunning.not()
             if(isRunning){
                 binding.btnPlay.setImageResource(R.drawable.baseline_pause_24)
-                startTimerWithMode(TimerService.PAUSE)
+                startTimerWithMode(TimerService.START)
             } else {
                 binding.btnPlay.setImageResource(R.drawable.baseline_play_arrow_24)
-                startTimerWithMode(TimerService.START)
+                startTimerWithMode(TimerService.PAUSE)
             }
         }
 
         binding.btnReset.setOnClickListener {
             startTimerWithMode(TimerService.RESET)
+            isRunning = false
         }
     }
 
     private fun startTimerWithMode(mode: String){
         timerIntent.putExtra(TimerService.MANAGE_ACTION_NAME, mode)
         requireActivity().startService(timerIntent)
+        timerIntent.removeExtra(TimerService.MANAGE_ACTION_NAME)
     }
 
     override fun onDestroyView() {
