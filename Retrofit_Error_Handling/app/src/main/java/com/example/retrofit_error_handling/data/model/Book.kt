@@ -4,5 +4,6 @@ data class Book(
     val title: String,
     val contents: String,
     val url: String,
-    val price: Int
+    val price: Int,
+    val isbn: String
 )
