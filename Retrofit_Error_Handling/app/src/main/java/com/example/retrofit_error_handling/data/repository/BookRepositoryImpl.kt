@@ -8,5 +8,8 @@ import javax.inject.Inject
 
 class BookRepositoryImpl @Inject constructor(private val bookDataSource: BookDataSource) :
     BookRepository {
-    override suspend fun getBookList(query: String) = bookDataSource.getBookList(query).map { it.toDomain() }
+    override suspend fun getBookList(query: String) =
+        bookDataSource.getBookList(query).map { bookDocuments ->
+            bookDocuments.map { it.toDomain() }
+        }
 }

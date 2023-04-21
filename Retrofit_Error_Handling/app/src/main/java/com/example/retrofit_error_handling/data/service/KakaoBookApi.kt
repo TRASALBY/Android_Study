@@ -5,8 +5,8 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface KakaoBookApi {
-    @GET("/b3/search/book")
-    fun searchBook(
+    @GET("/v3/search/book")
+    suspend fun searchBook(
         @Query("query")
         query: String
     ):BookResponse

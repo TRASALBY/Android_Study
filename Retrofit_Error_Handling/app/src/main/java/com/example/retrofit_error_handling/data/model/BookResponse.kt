@@ -1,9 +1,9 @@
 package com.example.retrofit_error_handling.data.model
 
+import com.google.gson.annotations.SerializedName
+
 data class BookResponse(
-    val title: String,
-    val contents: String,
-    val url: String,
-    val price: Int,
-    val isbn: String
+    val meta: BookMeta,
+    @SerializedName("documents")
+    val bookDocuments: List<BookDocument>
 )

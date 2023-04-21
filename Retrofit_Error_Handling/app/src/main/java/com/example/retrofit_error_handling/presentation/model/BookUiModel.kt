@@ -5,5 +5,5 @@ data class BookUiModel(
     val contents: String,
     val url: String,
     val price: Int,
-    val isbn: Int
+    val isbn: Long
 )
