@@ -13,7 +13,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
     private val _bookList: MutableStateFlow<List<BookUiModel>> = MutableStateFlow(emptyList())
     val bookList = _bookList.asStateFlow()
 
-    fun getBookList() {
+    fun getBookList(query : String) {
         // 도서 요청
     }
 }

@@ -1,6 +1,7 @@
 package com.example.retrofit_error_handling.presentation
 
 import android.os.Bundle
+import androidx.appcompat.widget.SearchView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -23,6 +24,26 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setBookRecyclerView()
+        setSearchView()
+    }
+
+    private fun setSearchView() {
+        binding.searchKeyword.apply {
+            isSubmitButtonEnabled = true
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if(!query.isNullOrBlank()){
+                        mainViewModel.getBookList(query)
+                    }
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return false
+                }
+
+            })
+        }
     }
 
 
