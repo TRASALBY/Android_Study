@@ -1,6 +1,6 @@
 package com.example.retrofit_error_handling.data.model
 
-data class Book(
+data class BookResponse(
     val title: String,
     val contents: String,
     val url: String,
