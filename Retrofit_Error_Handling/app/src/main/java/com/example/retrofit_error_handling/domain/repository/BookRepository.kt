@@ -1,8 +1,8 @@
 package com.example.retrofit_error_handling.domain.repository
 
-import com.example.retrofit_error_handling.presentation.model.BookUiModel
+import com.example.retrofit_error_handling.domain.model.Book
 import kotlinx.coroutines.flow.Flow
 
 interface BookRepository {
-    suspend fun getBookList(query: String) : Flow<BookUiModel>
+    suspend fun getBookList(query: String) : Flow<Book>
 }
