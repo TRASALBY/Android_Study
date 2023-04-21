@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.retrofit_error_handling.R
 import com.example.retrofit_error_handling.databinding.ItemBookBinding
 import com.example.retrofit_error_handling.presentation.model.BookUiModel
@@ -26,6 +27,9 @@ class BookAdapter : ListAdapter<BookUiModel, BookAdapter.BookViewHolder>(diffUti
 
         fun bind(book: BookUiModel){
             binding.book = book
+            Glide.with(binding.root)
+                .load(book.thumbnail)
+                .into(binding.ivBookImg)
         }
     }
 

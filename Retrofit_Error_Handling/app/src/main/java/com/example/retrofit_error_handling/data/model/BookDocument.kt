@@ -5,5 +5,6 @@ data class BookDocument(
     val contents: String,
     val url: String,
     val price: Int,
-    val isbn: String
+    val isbn: String,
+    val thumbnail: String
 )
