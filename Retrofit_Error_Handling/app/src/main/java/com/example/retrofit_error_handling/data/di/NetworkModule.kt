@@ -1,6 +1,7 @@
 package com.example.retrofit_error_handling.data.di
 
 import com.example.retrofit_error_handling.BuildConfig
+import com.example.retrofit_error_handling.data.network.ResultCallAdapter
 import com.example.retrofit_error_handling.data.service.KakaoBookApi
 import dagger.Module
 import dagger.Provides
@@ -49,6 +50,7 @@ object NetworkModule {
         .baseUrl(BuildConfig.BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(ResultCallAdapter.Factory())
         .build()
 
     @Singleton
