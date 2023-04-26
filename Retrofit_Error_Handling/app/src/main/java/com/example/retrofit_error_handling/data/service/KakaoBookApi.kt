@@ -1,7 +1,7 @@
 package com.example.retrofit_error_handling.data.service
 
 import com.example.retrofit_error_handling.data.model.BookResponse
-import com.example.retrofit_error_handling.data.model.Result
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -12,5 +12,5 @@ interface KakaoBookApi {
         query: String,
         @Query("size")
         test: String = "100"
-    ): Result<BookResponse>
+    ): Response<BookResponse>
 }

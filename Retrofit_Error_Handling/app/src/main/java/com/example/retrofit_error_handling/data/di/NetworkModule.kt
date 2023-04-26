@@ -1,7 +1,8 @@
 package com.example.retrofit_error_handling.data.di
 
 import com.example.retrofit_error_handling.BuildConfig
-import com.example.retrofit_error_handling.data.network.ResultCallAdapter
+import com.example.retrofit_error_handling.data.network.SafeApi
+import com.example.retrofit_error_handling.data.network.SafeApiImpl
 import com.example.retrofit_error_handling.data.service.KakaoBookApi
 import dagger.Module
 import dagger.Provides
@@ -50,7 +51,6 @@ object NetworkModule {
         .baseUrl(BuildConfig.BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
-        .addCallAdapterFactory(ResultCallAdapter.Factory())
         .build()
 
     @Singleton
@@ -58,5 +58,9 @@ object NetworkModule {
     fun provideKakaoBookApi(
         retrofit: Retrofit
     ): KakaoBookApi = retrofit.create(KakaoBookApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideSafeApi() : SafeApi = SafeApiImpl()
 
 }

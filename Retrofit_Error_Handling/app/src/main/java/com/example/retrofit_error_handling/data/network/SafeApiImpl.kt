@@ -9,8 +9,8 @@ import java.io.IOException
 import javax.inject.Inject
 
 class SafeApiImpl @Inject constructor(
-    private val gson: Gson
 ) : SafeApi {
+    private val gson= Gson()
     override suspend fun <ResultType, RequestType> getSafe(
         remoteFetch: suspend () -> Response<RequestType>,
         mapping: (RequestType) -> ResultType
@@ -32,7 +32,7 @@ class SafeApiImpl @Inject constructor(
                         ErrorResponse::class.java
                     ).message
 
-                    if (errorMessage.isNotBlank()) {
+                    if (errorMessage.isBlank()) {
                         errorMessage = "Unknown Error"
                     }
                     result = Result.Failure(it.code(), errorMessage)
