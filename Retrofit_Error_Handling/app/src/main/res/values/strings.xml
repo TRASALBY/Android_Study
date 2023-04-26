@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Retrofit_Error_Handling</string>
+    <string name="book_price">%,d 원</string>
+</resources>
