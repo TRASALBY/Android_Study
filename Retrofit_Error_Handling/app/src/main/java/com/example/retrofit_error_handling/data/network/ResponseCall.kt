@@ -15,7 +15,7 @@ class ResponseCall<T>(
     private val callDelegate: Call<T>
 ) : Call<Result<T>> {
 
-    val gson = Gson()
+    val gson by lazy { Gson() }
     override fun clone(): Call<Result<T>> = ResponseCall(callDelegate.clone())
 
     override fun execute(): Response<Result<T>> =
@@ -44,12 +44,14 @@ class ResponseCall<T>(
                         )
                     }
                 } else {
-                    val errorMessage = runCatching {
-                        gson.fromJson(
+                    var errorMessage = gson.fromJson(
                             response.errorBody()?.string(),
                             ErrorResponse::class.java
                         ).message
-                    }.getOrElse { "Unknown Error" }
+
+                    if(errorMessage.isNotBlank()){
+                        errorMessage = "Unknown Error"
+                    }
                     callback.onResponse(
                         this@ResponseCall,
                         Response.success(Result.Failure(response.code(), errorMessage))
