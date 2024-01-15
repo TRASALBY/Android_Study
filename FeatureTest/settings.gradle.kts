@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "FeatureTest"
 include(":app")
+include(":frientreebackgroundtest")
