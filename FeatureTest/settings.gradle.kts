@@ -15,4 +15,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "FeatureTest"
 include(":app")
-include(":FrienTreeBackGroundTest")
