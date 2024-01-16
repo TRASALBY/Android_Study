@@ -2,6 +2,7 @@ package com.example.micrecordmultipart
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
@@ -16,10 +17,16 @@ import java.io.IOException
 class MainActivity : AppCompatActivity() {
 
     private var mediaRecorder: MediaRecorder? = null
+    private var mediaPlayer: MediaPlayer? = null
+
     private var isRecording = false
+    private var isPlaying = false
+
     private val RECORD_AUDIO_PERMISSION_CODE = 123
 
+
     private lateinit var recordBtn: Button
+    private lateinit var recordPlayBtn: Button
     private lateinit var recordLottie: LottieAnimationView
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -31,6 +38,8 @@ class MainActivity : AppCompatActivity() {
 
         recordBtn = findViewById(R.id.btn_record)
         recordLottie = findViewById(R.id.lottieAnimationView)
+        recordPlayBtn = findViewById(R.id.btn_play)
+
 
         recordBtn.setOnClickListener {
 
@@ -49,6 +58,15 @@ class MainActivity : AppCompatActivity() {
             isRecording = isRecording.not()
         }
 
+
+        recordPlayBtn.setOnClickListener {
+            if (isPlaying) {
+                stopAudio()
+            } else {
+                playAudio()
+            }
+            isPlaying = isPlaying.not()
+        }
 
     }
 
@@ -70,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         mediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
         mediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
 
-        // 내부 저장소에 파일 생성
+
         val filePath = "${filesDir}/audio_record.m4a"
         mediaRecorder?.setOutputFile(filePath)
 
@@ -88,4 +106,36 @@ class MainActivity : AppCompatActivity() {
         mediaRecorder?.release()
         mediaRecorder = null
     }
+
+
+    private fun playAudio() {
+        mediaPlayer?.release()
+        mediaPlayer = MediaPlayer()
+        recordPlayBtn.text = "녹음 파일 중단"
+
+        try {
+            val filePath = "${filesDir}/audio_record.3gp"
+            mediaPlayer?.setDataSource(filePath)
+            mediaPlayer?.prepare()
+            mediaPlayer?.start()
+
+            mediaPlayer?.setOnCompletionListener {
+                stopAudio()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun stopAudio() {
+        recordPlayBtn.text = "녹음 파일 재생"
+        mediaPlayer?.apply {
+            if (isPlaying) {
+                stop()
+            }
+            release()
+        }
+    }
+
+
 }
