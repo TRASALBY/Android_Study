@@ -6,11 +6,20 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.MediaType
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -33,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var recordBtn: Button
     private lateinit var recordPlayBtn: Button
+    private lateinit var recordSendBtn: Button
     private lateinit var recordLottie: LottieAnimationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         recordBtn = findViewById(R.id.btn_record)
         recordLottie = findViewById(R.id.lottieAnimationView)
         recordPlayBtn = findViewById(R.id.btn_play)
+        recordSendBtn = findViewById(R.id.btn_send)
 
 
         recordBtn.setOnClickListener {
@@ -71,6 +82,10 @@ class MainActivity : AppCompatActivity() {
                 playAudio()
             }
             isPlaying = isPlaying.not()
+        }
+
+        recordSendBtn.setOnClickListener {
+            uploadAudio()
         }
 
     }
@@ -118,7 +133,7 @@ class MainActivity : AppCompatActivity() {
         recordPlayBtn.text = "녹음 파일 중단"
 
         try {
-            mediaPlayer?.setDataSource(applicationContext,audioFileUri!!)
+            mediaPlayer?.setDataSource(applicationContext, audioFileUri!!)
             mediaPlayer?.prepare()
             mediaPlayer?.start()
 
@@ -139,11 +154,45 @@ class MainActivity : AppCompatActivity() {
             release()
         }
     }
+
     private fun createAudioFile(): File {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val timeStamp: String =
+            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val audioFileName = "AUDIO_${timeStamp}_"
         val storageDir: File = getExternalFilesDir(cameraPhotoPath)!!
         return File.createTempFile(audioFileName, ".3gp", storageDir)
     }
+
+    private fun uploadAudio() {
+        if (audioFileUri != null) {
+            val file = File(audioFileUri!!.path!!)
+            val requestFile: RequestBody = RequestBody.create(MediaType.parse("audio/*"), file)
+            val body: MultipartBody.Part =
+                MultipartBody.Part.createFormData("audio", file.name, requestFile)
+
+            val retrofit = Retrofit.Builder()
+                .baseUrl("YourServerBaseURL") //TODO 서버 주소 바꾸기
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val apiService = retrofit.create(ApiService::class.java)
+            val call = apiService.uploadAudio(body)
+
+            call.enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        Log.d("Upload", "Success")
+                    } else {
+                        Log.e("Upload", "Failed")
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.e("Upload", "Error: ${t.message}")
+                }
+            })
+        }
+    }
+
 
 }
