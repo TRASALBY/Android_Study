@@ -4,15 +4,18 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
+import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,12 +27,14 @@ class MainActivity : AppCompatActivity() {
 
     private val RECORD_AUDIO_PERMISSION_CODE = 123
 
+    private val cameraPhotoPath: String = "YourDirectoryPath" // 디렉토리 경로를 설정하세요.
+    private var audioFileUri: Uri? = null
+
 
     private lateinit var recordBtn: Button
     private lateinit var recordPlayBtn: Button
     private lateinit var recordLottie: LottieAnimationView
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -82,15 +87,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startRecording() {
-        mediaRecorder = MediaRecorder()
-
-        mediaRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
-        mediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        mediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-
-
-        val filePath = "${filesDir}/audio_record.m4a"
-        mediaRecorder?.setOutputFile(filePath)
+        val audioFile: File = createAudioFile()
+        audioFileUri = Uri.fromFile(audioFile)
+        mediaRecorder = MediaRecorder().apply {
+            setAudioSource(MediaRecorder.AudioSource.MIC)
+            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            setOutputFile(audioFile.absolutePath)
+        }
 
         try {
             mediaRecorder?.prepare()
@@ -114,8 +118,7 @@ class MainActivity : AppCompatActivity() {
         recordPlayBtn.text = "녹음 파일 중단"
 
         try {
-            val filePath = "${filesDir}/audio_record.3gp"
-            mediaPlayer?.setDataSource(filePath)
+            mediaPlayer?.setDataSource(applicationContext,audioFileUri!!)
             mediaPlayer?.prepare()
             mediaPlayer?.start()
 
@@ -136,6 +139,11 @@ class MainActivity : AppCompatActivity() {
             release()
         }
     }
-
+    private fun createAudioFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val audioFileName = "AUDIO_${timeStamp}_"
+        val storageDir: File = getExternalFilesDir(cameraPhotoPath)!!
+        return File.createTempFile(audioFileName, ".3gp", storageDir)
+    }
 
 }
